@@ -1,0 +1,117 @@
+# 8 Guess: A Word Game
+# Charlie Romeo aka @cheynolds
+# Code In Place 2021 - Final Project
+"""
+File: 8guess.py
+-------------------
+When the user plays '8 Guess', the computer first selects a secret
+word at random from a list built into the program. The program then
+prints out a row of dashes—one for each letter in the secret word
+and asks the user to guess a letter. If the user guesses a letter
+that is in the word, the word is redisplayed with all instances
+of that letter shown in the correct positions, along with any
+letters correctly guessed on previous turns. If the letter does
+not appear in the word, the user is charged with an incorrect guess.
+The user keeps guessing letters until either (1) the user has
+correctly guessed all the letters in the word or (2) the user
+has made EIGHT incorrect guesses. Hence the name, 8 guess. 
+
+Coming soon: points, graphix, maybe even sounds! Follow @cheynolds for updates.
+"""
+
+import random
+
+LEXICON_FILE = "Lexicon.txt"    # File to read word list from
+INITIAL_GUESSES = 8             # Initial number of guesses player starts with
+
+def splash():
+    print("Welcome to 8 Guess: A Word Game.")
+    print("with more than 12000+ words- AMAZING!")
+    print()
+    print()
+
+def play_game(secret_word):
+    missed_let = ""
+    correct_let = ""
+    num_guess = INITIAL_GUESSES
+    while num_guess > 0:
+        show_current_word(missed_let, correct_let, secret_word)
+        print("You have", num_guess, "guesses left")
+        guess = user_guess(missed_let + correct_let)
+
+        if guess in secret_word:
+            print("That guess is correct.")
+            correct_let = correct_let + guess
+
+            found_all = True
+            for i in range(len(secret_word)):
+                if secret_word[i] not in correct_let:
+                    found_all = False
+                    break
+            if found_all:
+                print("Congratulations, the word is ", secret_word)
+                num_guess = 0
+        else:
+            missed_let = missed_let + guess
+            print("There are no", guess+"'s in the word")
+            num_guess -= 1
+
+    print("Sorry, you lost. The secret word was: " + secret_word)
+
+def user_guess(all_guessed):
+    #asks user for guess, rejects multi-char
+    while True:
+        guess = input("Type a single letter here, then press enter: ")
+        print()
+        if len(guess) != 1:
+            print("Guess should only be a single character.")
+        elif guess.upper() in all_guessed:
+            print("You already guessed this letter. Guess again.")
+        else:
+            return guess.upper()
+
+def show_current_word(missed_let, correct_let, secret_word):
+    blanks = '-' * len(secret_word)
+
+    for i in range(len(secret_word)):
+        if secret_word[i] in correct_let:
+            blanks = blanks[:i] + secret_word[i] + blanks[i+1:]
+
+    print("The word now looks like this: ", blanks)
+    print()
+
+def get_word():
+    """
+    This function returns a secret word that the player is trying
+    to guess in the game.  This function initially has a very small
+    list of words that it can select from to make it easier for you
+    to write and debug the main game playing program.  In Part II of
+    writing this program, you will re-implement this function to
+    select a word from a much larger list by reading a list of words
+    from the file specified by the constant LEXICON_FILE.
+    """
+
+    with open(LEXICON_FILE) as f:
+        for line in f:
+            lexicon = f.readlines()
+    lexicon_count = len(lexicon)
+    index = random.randrange(0,lexicon_count)
+    print(lexicon_count, " words in the lexicon.")
+    print()
+    return str(lexicon[index])
+
+
+
+def main():
+    """
+    To play the game, we first select the secret word for the
+    player to guess and then play the game using that secret word.
+    """
+    splash()
+    secret_word = get_word()
+    play_game(secret_word)
+
+# This provided line is required at the end of a Python file
+# to call the main() function.
+if __name__ == "__main__":
+    main()
