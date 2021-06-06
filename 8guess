@@ -24,6 +24,16 @@ import random
 LEXICON_FILE = "Lexicon.txt"    # File to read word list from
 INITIAL_GUESSES = 8             # Initial number of guesses player starts with
 
+def main():
+    """
+    To play the game, we first select the secret word for the
+    player to guess and then play the game using that secret word.
+    """
+    splash()
+    secret_word = get_word()
+    play_game(secret_word)
+
+
 def splash():
     print("Welcome to 8 Guess: A Word Game.")
     print("with more than 12000+ words- AMAZING!")
@@ -102,14 +112,7 @@ def get_word():
 
 
 
-def main():
-    """
-    To play the game, we first select the secret word for the
-    player to guess and then play the game using that secret word.
-    """
-    splash()
-    secret_word = get_word()
-    play_game(secret_word)
+
 
 # This provided line is required at the end of a Python file
 # to call the main() function.
